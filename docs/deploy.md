@@ -1,6 +1,6 @@
 # Deployment Guide
 
-This guide is the external-user entrypoint for deploying `oled-agent` as a reusable repository.
+This guide is the external-user entrypoint for deploying `Agent4Mat` as a reusable repository.
 
 ## 1) Minimum support matrix
 - Python: `3.10+` (CI baseline)
@@ -12,7 +12,7 @@ This guide is the external-user entrypoint for deploying `oled-agent` as a reusa
 ## 2) Quick deployment (recommended)
 ```bash
 git clone <repo-url>
-cd oled-agent
+cd Agent4Mat
 python3 -m venv .venv
 source .venv/bin/activate
 ./scripts/install_profile.sh cpu

@@ -1,0 +1,216 @@
+name: Agent4Mat CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_external_acceptance:
+        description: "Run external-chain acceptance job"
+        required: false
+        default: "false"
+        type: choice
+        options: ["false", "true"]
+  push:
+  pull_request:
+
+jobs:
+  llm-backend-retry-guard:
+    name: llm backend retry guard
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install CPU profile
+        run: ./scripts/install_profile.sh cpu
+
+      - name: Run openai_compat retry guard tests
+        run: |
+          PYTHONPATH=src python3 -m unittest -v \
+            tests.test_regressions.RegressionTests.test_agent_plan_llm_backend_openai_compat_retryable_http_code_retries \
+            tests.test_regressions.RegressionTests.test_agent_plan_llm_backend_invalid_retry_env_fallback
+
+  adapter-contract-guard:
+    name: adapter contract guard
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install CPU profile
+        run: ./scripts/install_profile.sh cpu
+
+      - name: Validate adapter templates contract
+        run: |
+          python3 scripts/adapters/validate_adapter_contract.py \
+            --tool train_predictor \
+            --cmd "python3 scripts/adapters/train_predictor_adapter_template.py" \
+            --workspace-root . \
+            --json
+          python3 scripts/adapters/validate_adapter_contract.py \
+            --tool generate_candidates \
+            --cmd "python3 scripts/adapters/generate_candidates_adapter_template.py" \
+            --workspace-root . \
+            --json
+          python3 scripts/adapters/validate_adapter_contract.py \
+            --tool score_candidates \
+            --cmd "python3 scripts/adapters/score_candidates_adapter_template.py" \
+            --workspace-root . \
+            --json
+
+  make-entrypoint-guard:
+    name: make entrypoint guard
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install CPU profile
+        run: ./scripts/install_profile.sh cpu
+
+      - name: Run make entrypoints
+        run: |
+          make release-check TASK_ID=ci_release_check
+          make real-adapter-validate
+
+  acceptance-cpu-mock:
+    name: acceptance cpu-mock
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install CPU profile
+        run: ./scripts/install_profile.sh cpu
+
+      - name: Run acceptance (cpu-mock)
+        run: make release-check TASK_ID=ci_accept_cpu_mock
+
+  acceptance-llm-mock:
+    name: acceptance llm-mock
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install CPU profile
+        run: ./scripts/install_profile.sh cpu
+
+      - name: Run acceptance (llm-mock)
+        run: make llm-smoke
+
+  agent4mat-ci:
+    name: core regression gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Validate lockfiles
+        run: python3 scripts/validate_lockfiles.py --requirements-dir requirements
+
+      - name: Verify acceptance script entrypoints exist
+        run: |
+          test -f scripts/run_external_chain_acceptance.sh
+          test -f scripts/run_external_chain_acceptance_with_debug.sh
+
+      - name: Install CPU profile
+        run: ./scripts/install_profile.sh cpu
+
+      - name: Run regression tests
+        run: PYTHONPATH=src python3 -m unittest -v tests.test_regressions
+
+      - name: Check plan tool schema sync
+        run: |
+          mkdir -p runs/ci
+          python3 scripts/sync_plan_tool_schema.py --check --json > runs/ci/plan_tool_schema_check.json
+
+      - name: Upload schema-check artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: plan-tool-schema-check
+          path: runs/ci/plan_tool_schema_check.json
+          if-no-files-found: error
+
+      - name: Publish schema-check summary
+        if: always()
+        run: |
+          echo "### Plan Tool Schema Check" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          cat runs/ci/plan_tool_schema_check.json >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Check llm planner modes
+        run: python3 scripts/check_llm_planner_modes.py
+
+      - name: Run smoke pipeline
+        run: PYTHONPATH=src python3 -m oled_agent.cli smoke --workspace-root .
+
+      - name: Run agent end-to-end
+        run: PYTHONPATH=src python3 -m oled_agent.cli agent-run --workspace-root . --task-id ci_smoke_task --request "设计470nm附近且高PLQY分子"
+
+      - name: Validate decision summary schema
+        run: python3 scripts/validate_decision_summary.py runs/agent/ci_smoke_task/decision_summary.json
+
+  external-chain-acceptance:
+    name: acceptance external-adapter (optional)
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.run_external_acceptance == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install CPU profile
+        run: ./scripts/install_profile.sh cpu
+
+      - name: Verify acceptance script entrypoints exist
+        run: |
+          test -f scripts/run_external_chain_acceptance.sh
+          test -f scripts/run_external_chain_acceptance_with_debug.sh
+
+      - name: Run external-chain acceptance with debug artifacts
+        env:
+          OLED_AGENT_ACCEPTANCE_EXTERNAL: "1"
+        run: ./scripts/run_external_chain_acceptance_with_debug.sh ci_external_acceptance
+
+      - name: Upload external-chain debug artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: external-chain-debug-artifacts
+          path: runs/external_chain_debug
+          if-no-files-found: ignore

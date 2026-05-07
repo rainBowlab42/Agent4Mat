@@ -282,7 +282,7 @@ def _validate_score(*, cmd: str, workspace_root: Path, timeout_sec: int) -> Dict
 
 
 def parse_args() -> argparse.Namespace:
-    p = argparse.ArgumentParser(description="Validate oled-agent adapter command contract")
+    p = argparse.ArgumentParser(description="Validate Agent4Mat adapter command contract")
     p.add_argument("--tool", required=True, choices=["train_predictor", "generate_candidates", "score_candidates"])
     p.add_argument("--cmd", required=True, help="Adapter command, for example: 'python3 scripts/adapters/score_candidates_adapter_template.py'")
     p.add_argument("--workspace-root", default=".", help="Working directory used to execute adapter command")

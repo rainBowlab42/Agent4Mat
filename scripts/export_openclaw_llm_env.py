@@ -126,7 +126,7 @@ def _print_provider_list(providers: dict) -> int:
 
 
 def parse_args() -> argparse.Namespace:
-    p = argparse.ArgumentParser(description="Export oled-agent LLM env vars from OpenClaw models.json")
+    p = argparse.ArgumentParser(description="Export Agent4Mat LLM env vars from OpenClaw models.json")
     p.add_argument("--config", default=str(_default_config_path()), help="Path to OpenClaw models.json")
     p.add_argument("--provider", default="", help="Provider key in models.json providers object")
     p.add_argument("--model-id", default="", help="Override model id")

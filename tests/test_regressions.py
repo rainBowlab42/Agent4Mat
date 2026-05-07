@@ -111,7 +111,7 @@ class RegressionTests(unittest.TestCase):
         pyproject_text = (repo_root / "pyproject.toml").read_text(encoding="utf-8")
 
         # pyproject.toml is the single source of truth.
-        self.assertIn('name = "oled-agent"', pyproject_text)
+        self.assertIn('name = "Agent4Mat"', pyproject_text)
         self.assertIn('version = "0.1.0"', pyproject_text)
         self.assertIn('"jsonschema>=4.0"', pyproject_text)
 
@@ -135,7 +135,7 @@ class RegressionTests(unittest.TestCase):
         name = cp_name.stdout.strip()
         version = cp_version.stdout.strip()
 
-        self.assertEqual(name, "oled-agent")
+        self.assertEqual(name, "Agent4Mat")
         self.assertEqual(version, "0.1.0")
         self.assertNotIn("overwritten", cp_name.stderr.lower())
         self.assertNotIn("overwritten", cp_version.stderr.lower())
@@ -2354,7 +2354,7 @@ class RegressionTests(unittest.TestCase):
             env["OLED_AGENT_LLM_CHAT_COMPLETIONS_PATH"] = "/v1/chat/completions"
             env["OLED_AGENT_LLM_AUTH_HEADER"] = "X-API-Key"
             env["OLED_AGENT_LLM_AUTH_SCHEME"] = ""
-            env["OLED_AGENT_LLM_EXTRA_HEADERS_JSON"] = '{"X-Client":"oled-agent","X-Trace":"ci"}'
+            env["OLED_AGENT_LLM_EXTRA_HEADERS_JSON"] = '{"X-Client":"agent4mat","X-Trace":"ci"}'
             env["OLED_AGENT_LLM_DISABLE_RESPONSE_FORMAT"] = "1"
             env["OLED_AGENT_LLM_TIMEOUT_SEC"] = "3"
 
@@ -2371,7 +2371,7 @@ class RegressionTests(unittest.TestCase):
             headers = capture.get("headers")
             self.assertIsInstance(headers, dict)
             self.assertEqual(headers.get("X-api-key"), "test-key")
-            self.assertEqual(headers.get("X-client"), "oled-agent")
+            self.assertEqual(headers.get("X-client"), "agent4mat")
             self.assertEqual(headers.get("X-trace"), "ci")
             payload = plan.to_dict()
             self.assertEqual(payload["summary"], "proxy route output")
@@ -3332,8 +3332,8 @@ class SchemaSyncScriptTests(unittest.TestCase):
 
 class WorkflowPolicyTests(unittest.TestCase):
     def test_oled_agent_ci_external_acceptance_only_manual_trigger(self) -> None:
-        repo_root = Path(__file__).resolve().parents[2]
-        workflow = repo_root / ".github" / "workflows" / "oled-agent-ci.yml"
+        repo_root = Path(__file__).resolve().parents[1]
+        workflow = repo_root / ".github" / "workflows" / "agent4mat-ci.yml"
         content = workflow.read_text(encoding="utf-8")
         self.assertIn("external-chain-acceptance:", content)
         self.assertIn("github.event_name == 'workflow_dispatch'", content)
@@ -3341,8 +3341,8 @@ class WorkflowPolicyTests(unittest.TestCase):
         self.assertNotIn("vars.OLED_AGENT_RUN_EXTERNAL_ACCEPTANCE", content)
 
     def test_oled_agent_ci_uses_schema_check_json_and_artifact(self) -> None:
-        repo_root = Path(__file__).resolve().parents[2]
-        workflow = repo_root / ".github" / "workflows" / "oled-agent-ci.yml"
+        repo_root = Path(__file__).resolve().parents[1]
+        workflow = repo_root / ".github" / "workflows" / "agent4mat-ci.yml"
         content = workflow.read_text(encoding="utf-8")
         self.assertIn("scripts/sync_plan_tool_schema.py --check --json", content)
         self.assertIn("plan_tool_schema_check.json", content)
@@ -3351,8 +3351,8 @@ class WorkflowPolicyTests(unittest.TestCase):
         self.assertIn("GITHUB_STEP_SUMMARY", content)
 
     def test_oled_agent_ci_has_llm_backend_retry_guard_job(self) -> None:
-        repo_root = Path(__file__).resolve().parents[2]
-        workflow = repo_root / ".github" / "workflows" / "oled-agent-ci.yml"
+        repo_root = Path(__file__).resolve().parents[1]
+        workflow = repo_root / ".github" / "workflows" / "agent4mat-ci.yml"
         content = workflow.read_text(encoding="utf-8")
         self.assertIn("llm-backend-retry-guard:", content)
         self.assertIn("Run openai_compat retry guard tests", content)
@@ -3366,8 +3366,8 @@ class WorkflowPolicyTests(unittest.TestCase):
         )
 
     def test_oled_agent_ci_has_acceptance_matrix_jobs(self) -> None:
-        repo_root = Path(__file__).resolve().parents[2]
-        workflow = repo_root / ".github" / "workflows" / "oled-agent-ci.yml"
+        repo_root = Path(__file__).resolve().parents[1]
+        workflow = repo_root / ".github" / "workflows" / "agent4mat-ci.yml"
         content = workflow.read_text(encoding="utf-8")
         self.assertIn("acceptance-cpu-mock:", content)
         self.assertIn("name: acceptance cpu-mock", content)
@@ -3379,8 +3379,8 @@ class WorkflowPolicyTests(unittest.TestCase):
         self.assertIn("name: acceptance external-adapter (optional)", content)
 
     def test_oled_agent_ci_has_adapter_contract_guard_job(self) -> None:
-        repo_root = Path(__file__).resolve().parents[2]
-        workflow = repo_root / ".github" / "workflows" / "oled-agent-ci.yml"
+        repo_root = Path(__file__).resolve().parents[1]
+        workflow = repo_root / ".github" / "workflows" / "agent4mat-ci.yml"
         content = workflow.read_text(encoding="utf-8")
         self.assertIn("adapter-contract-guard:", content)
         self.assertIn("Validate adapter templates contract", content)
@@ -3390,8 +3390,8 @@ class WorkflowPolicyTests(unittest.TestCase):
         self.assertIn("--tool score_candidates", content)
 
     def test_oled_agent_ci_has_make_entrypoint_guard_job(self) -> None:
-        repo_root = Path(__file__).resolve().parents[2]
-        workflow = repo_root / ".github" / "workflows" / "oled-agent-ci.yml"
+        repo_root = Path(__file__).resolve().parents[1]
+        workflow = repo_root / ".github" / "workflows" / "agent4mat-ci.yml"
         content = workflow.read_text(encoding="utf-8")
         section_start = content.index("make-entrypoint-guard:")
         section_end = content.index("  acceptance-cpu-mock:", section_start)
@@ -3406,8 +3406,8 @@ class WorkflowPolicyTests(unittest.TestCase):
         self.assertNotIn("make llm-smoke", section)
 
     def test_oled_agent_ci_external_acceptance_uses_shell_entrypoint(self) -> None:
-        repo_root = Path(__file__).resolve().parents[2]
-        workflow = repo_root / ".github" / "workflows" / "oled-agent-ci.yml"
+        repo_root = Path(__file__).resolve().parents[1]
+        workflow = repo_root / ".github" / "workflows" / "agent4mat-ci.yml"
         content = workflow.read_text(encoding="utf-8")
         self.assertIn("run_external_chain_acceptance_with_debug.sh", content)
         self.assertNotIn("run_external_chain_acceptance.py", content)

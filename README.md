@@ -1,11 +1,10 @@
-# oled-agent
+# Agent4Mat
 
-A reusable, config-driven OLED workflow runner with an agent layer (plan + tool-calling + execution records).
+A reusable, config-driven materials workflow runner with an agent layer (plan + tool-calling + execution records).
 
 Version: `0.1.0`  
 Release notes:
 - `CHANGELOG.md`
-- `docs/release_v0.1.0.md`
 
 ## Environment profiles
 - `requirements/base.in`: minimal runtime
@@ -15,7 +14,7 @@ Release notes:
 
 Install by profile:
 ```bash
-cd /Users/benton/openclaw-docker/workspace/oled-agent
+cd /path/to/Agent4Mat
 ./scripts/install_profile.sh cpu
 # or
 ./scripts/install_profile.sh gpu
@@ -35,7 +34,7 @@ python3 scripts/validate_lockfiles.py --requirements-dir requirements
 
 ## Quick start
 ```bash
-cd /Users/benton/openclaw-docker/workspace/oled-agent
+cd /path/to/Agent4Mat
 make quickstart
 make doctor
 PYTHONPATH=src python3 -m oled_agent.cli smoke --workspace-root .
@@ -55,7 +54,7 @@ Use this path to verify an external user can run the deterministic chain with mi
 
 ```bash
 git clone <your-repo-url>
-cd oled-agent
+cd Agent4Mat
 python3 -m venv .venv
 source .venv/bin/activate
 ./scripts/install_profile.sh cpu
@@ -114,7 +113,7 @@ Built-in backend mode (`openai_compat`) env vars:
 - optional `OLED_AGENT_LLM_CHAT_COMPLETIONS_PATH` (default: `/chat/completions`, for proxy-specific route)
 - optional `OLED_AGENT_LLM_AUTH_HEADER` (default: `Authorization`)
 - optional `OLED_AGENT_LLM_AUTH_SCHEME` (default: `Bearer`, set empty string to send raw key)
-- optional `OLED_AGENT_LLM_EXTRA_HEADERS_JSON` (JSON object string, e.g. `{"X-Client":"oled-agent"}`)
+- optional `OLED_AGENT_LLM_EXTRA_HEADERS_JSON` (JSON object string, e.g. `{"X-Client":"agent4mat"}`)
 - optional `OLED_AGENT_LLM_DISABLE_RESPONSE_FORMAT` (`1/true` to skip `response_format` for strict proxies)
 - optional `OLED_AGENT_LLM_DEBUG_ERROR` (`1/true` to include redacted backend error detail in fallback metadata; for debugging only)
 
@@ -127,7 +126,7 @@ export OLED_AGENT_LLM_BASE_URL=https://your-proxy.example/api
 export OLED_AGENT_LLM_CHAT_COMPLETIONS_PATH=/v1/chat/completions
 export OLED_AGENT_LLM_AUTH_HEADER=X-API-Key
 export OLED_AGENT_LLM_AUTH_SCHEME=
-export OLED_AGENT_LLM_EXTRA_HEADERS_JSON='{"X-Client":"oled-agent"}'
+export OLED_AGENT_LLM_EXTRA_HEADERS_JSON='{"X-Client":"agent4mat"}'
 export OLED_AGENT_LLM_DISABLE_RESPONSE_FORMAT=1
 ```
 
@@ -221,12 +220,13 @@ PYTHONPATH=src python3 -m oled_agent.cli agent-plan --workspace-root . --task-id
 - `configs/pipelines/`: pipeline config JSONs
 - `configs/models/`: model catalog for user-selectable predictor/generator
 - `runs/`: generated run outputs and manifests
-- `docs/`: migration and architecture notes
+- `docs/`: deployment and operations notes
   - deployment guide: `docs/deploy.md`
   - troubleshooting: `docs/troubleshooting.md`
+  - CI guide: `docs/ci.md`
 
 ## CI gate
-- workflow: `.github/workflows/oled-agent-ci.yml`
+- workflow: `.github/workflows/agent4mat-ci.yml`
 - checks: lockfile validation + regression tests + smoke + `agent-run` E2E
 - optional external-chain acceptance:
   - only runs on `workflow_dispatch` with input `run_external_acceptance=true`

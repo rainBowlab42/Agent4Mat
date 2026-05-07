@@ -49,8 +49,8 @@ fi
 echo "[INFO] Verifying core package metadata"
 "${PYTHON_BIN}" - <<'PY'
 import importlib.metadata as md
-dist = md.distribution("oled-agent")
-print("oled-agent version:", dist.version)
+dist = md.distribution("Agent4Mat")
+print("Agent4Mat version:", dist.version)
 PY
 
 echo "[INFO] Done."

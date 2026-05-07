@@ -3,9 +3,9 @@ requires = ["setuptools>=61", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "oled-agent"
+name = "Agent4Mat"
 version = "0.1.0"
-description = "Config-driven OLED workflow runner with reproducible manifests"
+description = "Config-driven materials workflow runner with reproducible manifests"
 readme = "README.md"
 requires-python = ">=3.9"
 authors = [{ name = "OpenClaw OLED Team" }]
@@ -15,6 +15,7 @@ dependencies = [
 
 [project.scripts]
 oled-agent = "oled_agent.cli:main"
+agent4mat = "oled_agent.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

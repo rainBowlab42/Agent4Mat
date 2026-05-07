@@ -1,13 +1,5 @@
 # Quickstart
 
-## Local (no install mode)
-```bash
-cd /Users/benton/openclaw-docker/workspace/oled-agent
-./scripts/install_profile.sh cpu
-PYTHONPATH=src python3 -m oled_agent.cli doctor --workspace-root .
-PYTHONPATH=src python3 -m oled_agent.cli smoke --workspace-root .
-```
-
 ## Docker CPU
 ```bash
 docker compose --profile cpu up --build

@@ -5,7 +5,7 @@ All notable changes to this project are documented in this file.
 ## [0.1.0] - 2026-05-06
 
 ### Added
-- Reusable `oled-agent` repository skeleton with deterministic CLI workflow:
+- Reusable `Agent4Mat` repository skeleton with deterministic CLI workflow:
   - `agent-plan`, `agent-run`, `agent-plan-json`, `agent-run-json`
   - machine-readable artifacts (`plan.json`, `execution.json`, `tool_state.json`, `decision_summary.json`)
 - Request/plan/decision schema validation guards and regression lock suite.

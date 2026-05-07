@@ -1,9 +1,9 @@
 # CI gates
 
-`oled-agent` uses a dedicated CI workflow:
+`Agent4Mat` uses a dedicated CI workflow:
 
-- workflow file: `.github/workflows/oled-agent-ci.yml`
-- trigger scope: changes under `oled-agent/**`
+- workflow file: `.github/workflows/agent4mat-ci.yml`
+- trigger scope: all push/pull_request changes
 
 ## Gate sequence
 1. validate dependency profile pins:

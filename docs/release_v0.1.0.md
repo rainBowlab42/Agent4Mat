@@ -37,10 +37,10 @@ Expected:
 ## Tagging and publish procedure
 
 ```bash
-git checkout master
+git checkout main
 git pull --ff-only
-git tag -a v0.1.0 -m "oled-agent v0.1.0"
-git push origin master
+git tag -a v0.1.0 -m "Agent4Mat v0.1.0"
+git push origin main
 git push origin v0.1.0
 ```
 

@@ -1,4 +1,4 @@
-# oled-agent current capabilities
+# Agent4Mat current capabilities
 
 ## A. Core workflow engine
 - Config-driven stage orchestration (`run` command)

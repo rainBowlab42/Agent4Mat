@@ -19,14 +19,14 @@ This runbook defines how to run and diagnose the real external Uni-Mol scoring c
 ## 2) Preflight
 
 ```bash
-cd /Users/benton/openclaw-docker/workspace/oled-agent
+cd /path/to/Agent4Mat
 PYTHONPATH=src python3 -m oled_agent.cli external-preflight --workspace-root .
 ```
 
 or:
 
 ```bash
-cd /Users/benton/openclaw-docker/workspace/oled-agent
+cd /path/to/Agent4Mat
 ./scripts/check_external_env.sh
 ```
 
@@ -46,7 +46,7 @@ If preflight fails, inspect check names:
 Machine-readable debug:
 
 ```bash
-cd /Users/benton/openclaw-docker/workspace/oled-agent
+cd /path/to/Agent4Mat
 PYTHONPATH=src python3 -m oled_agent.cli external-connectivity-debug --workspace-root . --json-out runs/external_debug.json
 ```
 
@@ -58,14 +58,14 @@ Read `runs/external_debug.json`:
 ## 3) Acceptance
 
 ```bash
-cd /Users/benton/openclaw-docker/workspace/oled-agent
+cd /path/to/Agent4Mat
 PYTHONPATH=src ./scripts/run_external_chain_acceptance.sh <task_id>
 ```
 
 or (recommended, includes auto debug artifacts):
 
 ```bash
-cd /Users/benton/openclaw-docker/workspace/oled-agent
+cd /path/to/Agent4Mat
 PYTHONPATH=src ./scripts/run_external_chain_acceptance_with_debug.sh <task_id>
 ```
 
