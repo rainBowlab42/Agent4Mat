@@ -2,6 +2,34 @@
 
 All notable changes to this project are documented in this file.
 
+## [Unreleased]
+
+### Added
+- LLM connectivity diagnostics:
+  - new CLI command `llm-connectivity`
+  - backend/command probe report (`report_type=llm_connectivity_v1`)
+  - optional JSON artifact output for automation/debug.
+- Makefile short entrypoint:
+  - `make llm-connectivity` for quick LLM source/backend checks.
+- Tool-oriented skill docs:
+  - `skills/unimol/SKILL.md`
+  - `skills/reinvent4/SKILL.md`
+  - `skills/mineru/SKILL.md`
+  - `skills/molscribe/SKILL.md`
+  - updated router `skills/SKILL.md`.
+- Repository-level assistant behavior policy:
+  - `SOUL.md`.
+
+### Changed
+- README synchronized with current command surface:
+  - documented `llm-connectivity` usage and intent
+  - added Skills and `SOUL.md` references
+  - clarified LLM smoke path (`make llm-smoke` based on mock planner mode checks).
+- Regression suite expanded to lock LLM connectivity behavior:
+  - not-configured failure path
+  - command probe success path
+  - backend HTTP error classification path.
+
 ## [0.1.0] - 2026-05-06
 
 ### Added
