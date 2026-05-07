@@ -727,6 +727,16 @@ class RegressionTests(unittest.TestCase):
         self.assertIn("external-connectivity-debug", troubleshoot)
         self.assertIn("mineru_not_configured", troubleshoot)
 
+    def test_gitattributes_enforces_lf_for_cross_platform_files(self) -> None:
+        repo_root = Path(__file__).resolve().parents[1]
+        gitattributes = repo_root / ".gitattributes"
+        self.assertTrue(gitattributes.exists())
+        content = gitattributes.read_text(encoding="utf-8")
+        self.assertIn("*.sh text eol=lf", content)
+        self.assertIn("*.py text eol=lf", content)
+        self.assertIn("*.md text eol=lf", content)
+        self.assertIn("*.yml text eol=lf", content)
+
     def test_release_docs_and_version_alignment(self) -> None:
         repo_root = Path(__file__).resolve().parents[1]
         pyproject_text = (repo_root / "pyproject.toml").read_text(encoding="utf-8")
